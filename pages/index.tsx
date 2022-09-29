@@ -1,4 +1,4 @@
-import { Avatar, Button, Container, Paper, Stack } from '@mui/material';
+import { Avatar, Button, Container, Paper, Stack, Typography } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
@@ -7,10 +7,24 @@ import HomeContents from '../components/HomeContents';
 import TestsHistory from '../components/TestsHistory';
 import connectToDatabase from '../db/connectToDatabase';
 import { IUser } from '../schema/user.schema';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export default function Index({ user: currentUser }: { user: IUser; }) {
   const [user, setcurrentUser] = React.useState(currentUser);
   const [page, setPage] = React.useState(0);
+  const [open, setOpen] = React.useState(true);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return <>
     <Head><title>Ascades - A Skin Cancer Detection Expert System</title></Head>
@@ -53,6 +67,34 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
       {page === 0 && <HomeContents user={user} />}
       {page === 2 && <TestsHistory user={user} />}
     </Container>
+
+    <Dialog
+      open={open}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        {"PRIVACY POLICY"}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description" component="div">
+          <Typography>
+            Last Updated: September 29, 2022
+          </Typography>
+          <Typography mt={2}>
+            This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Website and tells about Your privacy rights and how the law protects You.
+          </Typography>
+          <Typography mt={2}>
+            We use Your Personal data  to create an account for You to access our Website. You agree to the collection and use of information in accordance with this Privacy Policy.
+          </Typography>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>
+          Agree
+        </Button>
+      </DialogActions>
+    </Dialog>
   </>;
 }
 
