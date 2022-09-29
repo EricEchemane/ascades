@@ -12,7 +12,7 @@ export default async function connectToDatabase(): Promise<typeof mongoose | nul
             throw new Error('MONGODB_URI not set');
         }
         if (!mongoose.models.User) mongoose.model('User', userSchema);
-        const connection = await mongoose.connect(process.env.MONGODB_URI, { dbName: 'masterkeeper' });
+        const connection = await mongoose.connect(process.env.MONGODB_URI, { dbName: 'ascades' });
 
         database = connection;
         return database;
