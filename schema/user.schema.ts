@@ -42,5 +42,5 @@ const userSchema = new Schema({
     }],
 });
 
-export type IUserSchema = InferSchemaType<typeof userSchema>;
+export type IUser = InferSchemaType<typeof userSchema>;
 export default userSchema;
