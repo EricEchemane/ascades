@@ -8,6 +8,7 @@ import { labels } from '../utils/labels';
 import useLoadingIndicator from '../hooks/useLoadingIndicator';
 import ClassificationResults, { OutputDetails } from './ClassificationResults';
 import html2canvas from "html2canvas";
+import useNotification from '../hooks/useNotification';
 
 export default function HomeContents({ user }: { user: IUser; }) {
     const [page, setPage] = React.useState(0);
@@ -23,6 +24,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
         recommendation: "",
         description: ""
     });
+    const notify = useNotification();
 
     const handleOutputDialogClose = () => {
         setOutputDialogIsOpen(false);
@@ -90,6 +92,25 @@ export default function HomeContents({ user }: { user: IUser; }) {
             downloadLink.download = "true";
             downloadLink.click();
         });
+    };
+
+    const saveHistory = async () => {
+        loadingIndicator.setVisibility(true);
+        const res = await fetch("/api/push-history", {
+            method: "POST",
+            body: JSON.stringify({
+                image: outputDetails.imageDataUrl,
+                diagnosis: outputDetails.diagnosis,
+                accuracy: outputDetails.modelConfidence,
+            }),
+            headers: { "Content-Type": "application/json" }
+        });
+        const body = await res.json();
+        if (res.ok) {
+            notify("Saved!", "success");
+            handleOutputDialogClose();
+        } else notify(body.message, "error");
+        loadingIndicator.setVisibility(false);
     };
 
     return <>
@@ -183,8 +204,8 @@ export default function HomeContents({ user }: { user: IUser; }) {
             <DialogActions>
                 <Button onClick={handleOutputDialogClose}>cancel</Button>
                 <Button onClick={download}>download</Button>
-                <Button onClick={handleOutputDialogClose} autoFocus>
-                    save
+                <Button onClick={saveHistory}>
+                    save to history
                 </Button>
             </DialogActions>
         </Dialog>

@@ -28,17 +28,21 @@ const userSchema = new Schema({
         requried: [true, "Gender is required"]
     },
     testsHistory: [{
+        date: {
+            type: String,
+            required: [true, "Date is required"]
+        },
         image: {
             type: String,
             required: [true, "Image is required"],
         },
-        result: {
+        diagnosis: {
             type: String,
-            required: [true, "Result is required"],
+            required: [true, "Diagnosis is required"],
         },
-        confidence: {
+        accuracy: {
             type: Number,
-            required: [true, "Confidence is required"],
+            required: [true, "Accuracy is required"],
         },
     }],
 });
