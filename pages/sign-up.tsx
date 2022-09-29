@@ -15,16 +15,17 @@ import { getToken } from 'next-auth/jwt';
 import connectToDatabase from '../db/connectToDatabase';
 
 export default function SignUp() {
-    const { data: session, status } = useSession();
+    const router = useRouter();
+    const { data: session, status } = useSession({
+        required: true,
+        onUnauthenticated() {
+            router.replace("/");
+        },
+    });
     const [gender, setGender] = React.useState("male");
     const [birthDate, setBirthDate] = React.useState<Dayjs | null>(dayjs());
     const loadingIndicator = useLoadingIndicator();
-    const router = useRouter();
     const notify = useNotification();
-
-    React.useEffect(() => {
-        if (status === "authenticated") router.replace("/");
-    }, [router, status]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -138,23 +139,40 @@ export default function SignUp() {
 }
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const token = await getToken({ req: context.req });
-    if (!token) return { props: {} };
+
+    if (!token) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        };
+    }
     const db = await connectToDatabase();
-    if (!db) return {
-        redirect: {
-            destination: '/500',
-            permanent: false
-        }
-    };
+    if (!db) {
+        return {
+            redirect: {
+                destination: '/500',
+                permanent: false
+            }
+        };
+    }
+
     const { User } = db.models;
+
     const user = await User.findOne({
         email: token.email
     });
-    if (!user) return { props: {} };
+    if (user) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        };
+    }
+
     return {
-        redirect: {
-            destination: "/",
-            permanent: false
-        }
+        props: {}
     };
 };

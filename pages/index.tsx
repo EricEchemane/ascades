@@ -12,19 +12,30 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 export default function Index({ user: currentUser }: { user: IUser; }) {
   const [user, setcurrentUser] = React.useState(currentUser);
   const [page, setPage] = React.useState(0);
   const [open, setOpen] = React.useState(true);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const { data: session } = useSession();
+  const router = useRouter();
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    fetch("/api/get-user").then((res) => {
+      if (res.ok) return res.json();
+      else router.replace('/sign-up');
+    }).then((user) => {
+      setcurrentUser(user);
+    });
+  }, [router]);
+
+  if (!user || !session) return <div>loading...</div>;
 
   return <>
     <Head><title>Ascades - A Skin Cancer Detection Expert System</title></Head>
@@ -99,32 +110,32 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const token = await getToken({ req: context.req });
-  if (!token) return {
-    redirect: {
-      destination: '/sign-up',
-      permanent: false
-    }
-  };
-  const db = await connectToDatabase();
-  if (!db) return {
-    redirect: {
-      destination: '/500',
-      permanent: false
-    }
-  };
-  const { User } = db.models;
-  const user = await User.findOne({
-    email: token.email
-  });
-  if (!user) return {
-    redirect: {
-      destination: '/sign-up',
-      permanent: false
-    }
-  };
-  return {
-    props: { user: JSON.parse(JSON.stringify(user)) }
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const token = await getToken({ req: context.req });
+//   if (!token) return {
+//     redirect: {
+//       destination: '/sign-up',
+//       permanent: false
+//     }
+//   };
+//   const db = await connectToDatabase();
+//   if (!db) return {
+//     redirect: {
+//       destination: '/500',
+//       permanent: false
+//     }
+//   };
+//   const { User } = db.models;
+//   const user = await User.findOne({
+//     email: token.email
+//   });
+//   if (!user) return {
+//     redirect: {
+//       destination: '/sign-up',
+//       permanent: false
+//     }
+//   };
+//   return {
+//     props: { user: JSON.parse(JSON.stringify(user)) }
+//   };
+// };
