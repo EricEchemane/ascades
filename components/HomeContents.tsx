@@ -11,10 +11,8 @@ import html2canvas from "html2canvas";
 import useNotification from '../hooks/useNotification';
 
 export default function HomeContents({ user }: { user: IUser; }) {
-    const [page, setPage] = React.useState(0);
     const [imageDataUrl, setImageDataUrl] = React.useState('');
     const [file, setFile] = React.useState();
-    const [prediction, setPrediction] = React.useState();
     const loadingIndicator = useLoadingIndicator();
     const [outputDialogIsOpen, setOutputDialogIsOpen] = React.useState(false);
     const [outputDetails, setOutputDetails] = React.useState<OutputDetails>({
@@ -70,8 +68,6 @@ export default function HomeContents({ user }: { user: IUser; }) {
         const results = await (pred as any).data();
         const max = Math.max(...results);
         const index = results.findIndex((r: any) => r === max);
-        const prediction = { confidence: max, type: labels[index] };
-        setPrediction(prediction as any);
         loadingIndicator.setVisibility(false);
         setOutputDetails({
             diagnosis: labels[index].label,

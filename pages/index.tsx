@@ -4,11 +4,13 @@ import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import React from 'react';
 import HomeContents from '../components/HomeContents';
+import TestsHistory from '../components/TestsHistory';
 import connectToDatabase from '../db/connectToDatabase';
 import { IUser } from '../schema/user.schema';
 
 export default function Index({ user: currentUser }: { user: IUser; }) {
   const [user, setcurrentUser] = React.useState(currentUser);
+  const [page, setPage] = React.useState(0);
 
   return <>
     <Head><title>Ascades - A Skin Cancer Detection Expert System</title></Head>
@@ -27,14 +29,17 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
             direction="row"
             alignItems="center">
             <Button
+              onClick={() => setPage(0)}
               size="small"
               variant='contained'
               className='white'> Home </Button>
             <Button
+              onClick={() => setPage(1)}
               size="small"
               variant='contained'
               className='white'> About </Button>
             <Button
+              onClick={() => setPage(2)}
               size="small"
               variant='contained'
               className='white'> Tests History </Button>
@@ -45,7 +50,8 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
             src={user.image} />
         </Stack>
       </Paper>
-      <HomeContents user={user} />
+      {page === 0 && <HomeContents user={user} />}
+      {page === 2 && <TestsHistory user={user} />}
     </Container>
   </>;
 }
