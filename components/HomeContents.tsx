@@ -7,6 +7,7 @@ import * as tf from '@tensorflow/tfjs';
 import { labels } from '../utils/labels';
 import useLoadingIndicator from '../hooks/useLoadingIndicator';
 import ClassificationResults, { OutputDetails } from './ClassificationResults';
+import html2canvas from "html2canvas";
 
 export default function HomeContents({ user }: { user: IUser; }) {
     const [page, setPage] = React.useState(0);
@@ -79,6 +80,18 @@ export default function HomeContents({ user }: { user: IUser; }) {
         setOutputDialogIsOpen(true);
     };
 
+    const download = () => {
+        const element = document.getElementById("output-download");
+        if (!element) return;
+        html2canvas(element).then(canvas => {
+            const url = canvas.toDataURL("image/png");
+            const downloadLink = document.createElement("a");
+            downloadLink.href = url;
+            downloadLink.download = "true";
+            downloadLink.click();
+        });
+    };
+
     return <>
         <Grid container my={4}>
             <Grid item sm={12} md={6}>
@@ -139,20 +152,37 @@ export default function HomeContents({ user }: { user: IUser; }) {
         </Grid>
 
         <Dialog
+            maxWidth="md"
             open={outputDialogIsOpen}
             aria-labelledby="output-dialog">
-            <DialogTitle id="output-dialog-title">
-                {"Classification Results"}
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText
-                    component="div"
-                    id="output-dialog-description">
-                    <ClassificationResults user={user} details={outputDetails} />
-                </DialogContentText>
-            </DialogContent>
+            <div id='output-download'>
+                <DialogTitle id="output-dialog-title">
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        width="100%">
+                        <Typography variant="h6">
+                            Classification Results
+                        </Typography>
+                        <Image
+                            alt="ascade logo"
+                            src="/logo.png"
+                            width={100}
+                            height={45} />
+                    </Stack>
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText
+                        component="div"
+                        id="output-dialog-description">
+                        <ClassificationResults user={user} details={outputDetails} />
+                    </DialogContentText>
+                </DialogContent>
+            </div>
             <DialogActions>
                 <Button onClick={handleOutputDialogClose}>cancel</Button>
+                <Button onClick={download}>download</Button>
                 <Button onClick={handleOutputDialogClose} autoFocus>
                     save
                 </Button>

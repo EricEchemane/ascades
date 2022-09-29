@@ -18,6 +18,7 @@
     "@tensorflow/tfjs": "^3.20.0",
     "cookies-next": "^2.1.1",
     "dayjs": "^1.11.5",
+    "html2canvas": "^1.4.1",
     "mongoose": "^6.6.2",
     "next": "12.3.1",
     "next-auth": "^4.12.2",
