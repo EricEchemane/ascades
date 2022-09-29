@@ -1,4 +1,4 @@
-import { Avatar, Button, Grid, Stack, Typography } from '@mui/material';
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { IUser } from '../schema/user.schema';
 import Image from "next/image";
@@ -6,6 +6,7 @@ import { ImageOutlined } from '@mui/icons-material';
 import * as tf from '@tensorflow/tfjs';
 import { labels } from '../utils/labels';
 import useLoadingIndicator from '../hooks/useLoadingIndicator';
+import ClassificationResults, { OutputDetails } from './ClassificationResults';
 
 export default function HomeContents({ user }: { user: IUser; }) {
     const [page, setPage] = React.useState(0);
@@ -13,6 +14,18 @@ export default function HomeContents({ user }: { user: IUser; }) {
     const [file, setFile] = React.useState();
     const [prediction, setPrediction] = React.useState();
     const loadingIndicator = useLoadingIndicator();
+    const [outputDialogIsOpen, setOutputDialogIsOpen] = React.useState(false);
+    const [outputDetails, setOutputDetails] = React.useState<OutputDetails>({
+        diagnosis: "",
+        modelConfidence: 0,
+        imageDataUrl: "",
+        recommendation: "",
+        description: ""
+    });
+
+    const handleOutputDialogClose = () => {
+        setOutputDialogIsOpen(false);
+    };
 
     const handleFileChange = (e: any) => {
         if (e.target.files.length === 0) return;
@@ -57,6 +70,13 @@ export default function HomeContents({ user }: { user: IUser; }) {
         const prediction = { confidence: max, type: labels[index] };
         setPrediction(prediction as any);
         loadingIndicator.setVisibility(false);
+        setOutputDetails({
+            diagnosis: labels[index].label,
+            modelConfidence: max,
+            imageDataUrl,
+            ...labels[index]
+        });
+        setOutputDialogIsOpen(true);
     };
 
     return <>
@@ -107,7 +127,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
                         />
                     </Button>
                     <Button
-                        disabled={loadingIndicator.isVisible}
+                        disabled={loadingIndicator.isVisible || !imageDataUrl}
                         onClick={classify}
                         className='c-white'
                         fullWidth
@@ -117,5 +137,26 @@ export default function HomeContents({ user }: { user: IUser; }) {
                 </Stack>
             </Grid>
         </Grid>
+
+        <Dialog
+            open={outputDialogIsOpen}
+            aria-labelledby="output-dialog">
+            <DialogTitle id="output-dialog-title">
+                {"Classification Results"}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText
+                    component="div"
+                    id="output-dialog-description">
+                    <ClassificationResults user={user} details={outputDetails} />
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleOutputDialogClose}>cancel</Button>
+                <Button onClick={handleOutputDialogClose} autoFocus>
+                    save
+                </Button>
+            </DialogActions>
+        </Dialog>
     </>;
 }
