@@ -17,3 +17,7 @@ body {
 button.white {
     background-color: #f6f6f6 !important;
 }
+
+.c-white {
+    color: white !important;
+}

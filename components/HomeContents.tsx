@@ -1,0 +1,121 @@
+import { Avatar, Button, Grid, Stack, Typography } from '@mui/material';
+import React from 'react';
+import { IUser } from '../schema/user.schema';
+import Image from "next/image";
+import { ImageOutlined } from '@mui/icons-material';
+import * as tf from '@tensorflow/tfjs';
+import { labels } from '../utils/labels';
+import useLoadingIndicator from '../hooks/useLoadingIndicator';
+
+export default function HomeContents({ user }: { user: IUser; }) {
+    const [page, setPage] = React.useState(0);
+    const [imageDataUrl, setImageDataUrl] = React.useState('');
+    const [file, setFile] = React.useState();
+    const [prediction, setPrediction] = React.useState();
+    const loadingIndicator = useLoadingIndicator();
+
+    const handleFileChange = (e: any) => {
+        if (e.target.files.length === 0) return;
+
+        const files = e.target.files;
+        const file = files[0];
+        setFile(file);
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+            alert('Please upload a valid image file');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = (e) => {
+            const base64Image = reader.result;
+            setImageDataUrl(base64Image as string);
+        };
+    };
+
+    const classify = () => {
+        if (!imageDataUrl) return;
+        predict();
+    };
+
+    const predict = async () => {
+        loadingIndicator.setVisibility(true);
+        const img = document.createElement('img');
+        img.width = 28;
+        img.height = 28;
+        if (!file) return;
+        img.src = URL.createObjectURL(file);
+
+        const model = await tf.loadLayersModel('/tfjs/model.json');
+        const imageTensor = tf.browser.fromPixels(img)
+            .reshape([-1, 28, 28, 3]);
+
+        const pred = model.predict(imageTensor);
+        const results = await (pred as any).data();
+        const max = Math.max(...results);
+        const index = results.findIndex((r: any) => r === max);
+        const prediction = { confidence: max, type: labels[index] };
+        setPrediction(prediction as any);
+        loadingIndicator.setVisibility(false);
+    };
+
+    return <>
+        <Grid container my={4}>
+            <Grid item sm={12} md={6}>
+                <Stack alignItems="center">
+                    <Image
+                        alt="ascade logo"
+                        src="/logo.png"
+                        width={350}
+                        height={140} />
+                    <Stack alignItems="flex-start">
+                        <Typography mt={4} variant="button">
+                            Consider the following before classifying a skin image
+                        </Typography>
+                        <Typography mt={4} variant="body1">
+                            1. Instruction number one
+                        </Typography>
+                        <Typography mt={4} variant="body1">
+                            2. Instruction number two
+                        </Typography>
+                    </Stack>
+                </Stack>
+            </Grid>
+            <Grid item sm={12} md={6}>
+                <Stack
+                    spacing={3}
+                    alignItems="center"
+                    px={4}>
+                    <Avatar
+                        className='k3'
+                        variant="rounded"
+                        sx={{ width: "100%", height: "300px" }}
+                        alt="User skin image"
+                        src={imageDataUrl}>
+                        <ImageOutlined sx={{ fontSize: "5rem" }} />
+                    </Avatar>
+                    <Button
+                        disabled={loadingIndicator.isVisible}
+                        fullWidth
+                        component="label"
+                        variant='outlined'>
+                        Select an image
+                        <input
+                            type="file"
+                            hidden
+                            onChange={handleFileChange}
+                        />
+                    </Button>
+                    <Button
+                        disabled={loadingIndicator.isVisible}
+                        onClick={classify}
+                        className='c-white'
+                        fullWidth
+                        variant='contained'>
+                        Classify
+                    </Button>
+                </Stack>
+            </Grid>
+        </Grid>
+    </>;
+}

@@ -1,9 +1,9 @@
-import { Avatar, Button, Container, Paper, Stack, Typography } from '@mui/material';
+import { Avatar, Button, Container, Paper, Stack } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import React from 'react';
-import MainContents from '../components/MainContents';
+import HomeContents from '../components/HomeContents';
 import connectToDatabase from '../db/connectToDatabase';
 import { IUser } from '../schema/user.schema';
 
@@ -18,7 +18,7 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
         className='k3'
         sx={{ borderRadius: ".7rem" }}>
         <Stack
-          my={2} p={2}
+          my={2} py={1} px={2}
           direction="row"
           alignItems="center"
           justifyContent="space-between">
@@ -26,8 +26,18 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
             spacing={2}
             direction="row"
             alignItems="center">
-            <Button variant='contained' className='white'> Home </Button>
-            <Button variant='contained' className='white'> About </Button>
+            <Button
+              size="small"
+              variant='contained'
+              className='white'> Home </Button>
+            <Button
+              size="small"
+              variant='contained'
+              className='white'> About </Button>
+            <Button
+              size="small"
+              variant='contained'
+              className='white'> Tests History </Button>
           </Stack>
           <Avatar
             sx={{ width: 50, height: 50 }}
@@ -35,7 +45,7 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
             src={user.image} />
         </Stack>
       </Paper>
-      <MainContents user={user} />
+      <HomeContents user={user} />
     </Container>
   </>;
 }
