@@ -12,20 +12,35 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
-export default function Index({ user: currentUser }: { user: IUser; }) {
-  const [user, setcurrentUser] = React.useState(currentUser);
+export default function Index() {
+  const [user, setcurrentUser] = React.useState();
   const [page, setPage] = React.useState(0);
   const [open, setOpen] = React.useState(true);
+  const router = useRouter();
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push('/sign-up');
+    },
+  });
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  React.useEffect(() => {
+    if (!session) return;
+    fetch("/api/get-user")
+      .then((res) => res.json())
+      .then((data) => {
+        setcurrentUser(data.data);
+      });
+  }, [session]);
 
   const handleClose = () => {
     setOpen(false);
   };
 
+  if (!user) return "Loading...";
   return <>
     <Head><title>Ascades - A Skin Cancer Detection Expert System</title></Head>
     <Container maxWidth="md">
@@ -60,8 +75,8 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
           </Stack>
           <Avatar
             sx={{ width: 50, height: 50 }}
-            alt={user.name}
-            src={user.image} />
+            alt={(user as any).name}
+            src={(user as any).image} />
         </Stack>
       </Paper>
       {page === 0 && <HomeContents user={user} />}
@@ -99,32 +114,32 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const token = await getToken({ req: context.req });
-  if (!token) return {
-    redirect: {
-      destination: '/sign-up',
-      permanent: false
-    }
-  };
-  const db = await connectToDatabase();
-  if (!db) return {
-    redirect: {
-      destination: '/500',
-      permanent: false
-    }
-  };
-  const { User } = db.models;
-  const user = await User.findOne({
-    email: token.email
-  });
-  if (!user) return {
-    redirect: {
-      destination: '/sign-up',
-      permanent: false
-    }
-  };
-  return {
-    props: { user: JSON.parse(JSON.stringify(user)) }
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const token = await getToken({ req: context.req });
+//   if (!token) return {
+//     redirect: {
+//       destination: '/sign-up',
+//       permanent: false
+//     }
+//   };
+//   const db = await connectToDatabase();
+//   if (!db) return {
+//     redirect: {
+//       destination: '/500',
+//       permanent: false
+//     }
+//   };
+//   const { User } = db.models;
+//   const user = await User.findOne({
+//     email: token.email
+//   });
+//   if (!user) return {
+//     redirect: {
+//       destination: '/sign-up',
+//       permanent: false
+//     }
+//   };
+//   return {
+//     props: { user: JSON.parse(JSON.stringify(user)) }
+//   };
+// };
