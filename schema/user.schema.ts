@@ -12,7 +12,8 @@ const userSchema = new Schema({
         validate: {
             validator: isValidEmail,
             message: "Email is invalid"
-        }
+        },
+        unique: true
     },
     image: {
         type: String,

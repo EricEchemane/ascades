@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.10.6",
     "@mui/material": "^5.10.7",
     "@mui/x-date-pickers": "^5.0.3",
+    "@tensorflow/tfjs": "^3.20.0",
     "cookies-next": "^2.1.1",
     "dayjs": "^1.11.5",
     "mongoose": "^6.6.2",
