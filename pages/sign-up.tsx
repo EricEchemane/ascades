@@ -4,22 +4,39 @@ import Head from 'next/head';
 import React, { FormEvent } from 'react';
 import Image from "next/image";
 import { Google } from '@mui/icons-material';
-import { DatePicker, LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import useLoadingIndicator from '../hooks/useLoadingIndicator';
+import { useRouter } from 'next/router';
+import useNotification from '../hooks/useNotification';
 
-type Props = {};
-
-export default function SignUp({ }: Props) {
-    const { data: session, status } = useSession();
+export default function SignUp() {
+    const { data: session } = useSession();
     const [gender, setGender] = React.useState("male");
     const [birthDate, setBirthDate] = React.useState<Dayjs | null>(dayjs());
     const loadingIndicator = useLoadingIndicator();
+    const router = useRouter();
+    const notify = useNotification();
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log(e);
+        loadingIndicator.setVisibility(true);
+        const res = await fetch("/api/signup", {
+            method: "POST",
+            body: JSON.stringify({
+                name: session?.user?.name || "",
+                email: session?.user?.email || "",
+                image: session?.user?.image || "",
+                birthDate: birthDate?.toString(),
+                gender
+            }),
+            headers: { "Content-Type": "application/json" }
+        });
+        const body = await res.json();
+        if (res.ok) router.replace("/");
+        else notify(body.message, "error");
+        loadingIndicator.setVisibility(false);
     };
 
     return <>

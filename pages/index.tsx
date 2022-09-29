@@ -6,6 +6,7 @@ import { IUser } from '../schema/user.schema';
 
 export default function Index({ user }: { user: IUser; }) {
   const [current, setcurrentUser] = React.useState(user);
+  console.log(user);
 
   return (
     <div>Index</div>
