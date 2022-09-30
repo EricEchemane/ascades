@@ -9,6 +9,7 @@ import useLoadingIndicator from '../hooks/useLoadingIndicator';
 import ClassificationResults, { OutputDetails } from './ClassificationResults';
 import html2canvas from "html2canvas";
 import useNotification from '../hooks/useNotification';
+import useAlertDialog from '../hooks/useAlertDialog';
 
 export default function HomeContents({ user }: { user: IUser; }) {
     const [imageDataUrl, setImageDataUrl] = React.useState('');
@@ -23,6 +24,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
         description: ""
     });
     const notify = useNotification();
+    const { show } = useAlertDialog();
 
     const handleOutputDialogClose = () => {
         setOutputDialogIsOpen(false);
@@ -67,6 +69,13 @@ export default function HomeContents({ user }: { user: IUser; }) {
         const pred = model.predict(imageTensor);
         const results = await (pred as any).data();
         const max = Math.max(...results);
+
+        if (max * 100 <= 90.00) {
+            show("Classification Result", "Not a skin cancer");
+            loadingIndicator.setVisibility(false);
+            return;
+        }
+
         const index = results.findIndex((r: any) => r === max);
         loadingIndicator.setVisibility(false);
         setOutputDetails({

@@ -10,9 +10,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import useLoadingIndicator from '../hooks/useLoadingIndicator';
 import { useRouter } from 'next/router';
 import useNotification from '../hooks/useNotification';
-import { GetServerSideProps } from 'next';
-import { getToken } from 'next-auth/jwt';
-import connectToDatabase from '../db/connectToDatabase';
 
 export default function SignUp() {
     const router = useRouter();
@@ -149,35 +146,3 @@ export default function SignUp() {
         </Container>
     </>;
 }
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     const token = await getToken({ req: context.req });
-
-//     if (!token) return { props: {} };
-//     const db = await connectToDatabase();
-//     if (!db) {
-//         return {
-//             redirect: {
-//                 destination: '/500',
-//                 permanent: false
-//             }
-//         };
-//     }
-
-//     const { User } = db.models;
-
-//     const user = await User.findOne({
-//         email: token.email
-//     });
-//     if (user) {
-//         return {
-//             redirect: {
-//                 destination: '/',
-//                 permanent: false
-//             }
-//         };
-//     }
-
-//     return {
-//         props: {}
-//     };
-// };
