@@ -49,7 +49,11 @@ export default function SignUp() {
 
     useEffect(() => {
         if (session && session.user) {
-            router.replace("/");
+            fetch("/api/get-user")
+                .then(res => res.json())
+                .then(body => {
+                    if (body.success) router.replace("/");
+                });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session]);
@@ -88,7 +92,7 @@ export default function SignUp() {
                             justifyContent="space-between">
                             <Typography
                                 variant='h3'>
-                                Sign up
+                                Sign in
                             </Typography>
                             <Avatar
                                 sx={{
