@@ -14,6 +14,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import About from '../components/About';
 
 export default function Index() {
   const [user, setcurrentUser] = React.useState();
@@ -82,6 +83,7 @@ export default function Index() {
         </Stack>
       </Paper>
       {page === 0 && <HomeContents user={user} />}
+      {page === 1 && <About />}
       {page === 2 && <TestsHistory user={user} />}
     </Container>
 

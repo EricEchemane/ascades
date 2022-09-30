@@ -120,13 +120,13 @@ export default function HomeContents({ user }: { user: IUser; }) {
                         height={140} />
                     <Stack alignItems="flex-start">
                         <Typography mt={4} variant="button">
-                            Consider the following before classifying a skin image
+                            The following are instruction for classification:
                         </Typography>
                         <Typography mt={4} variant="body1">
-                            1. Instruction number one
+                            1. The image should be clearly captured and focus on skin you want to test.
                         </Typography>
                         <Typography mt={4} variant="body1">
-                            2. Instruction number two
+                            {`2. After classifying the result will show up. Save it its the correct image of your skin. Close if it's not and it won't save to your account.`}
                         </Typography>
                     </Stack>
                 </Stack>
