@@ -1,12 +1,8 @@
 import { Avatar, Button, Container, Paper, Stack, Typography } from '@mui/material';
-import { GetServerSideProps } from 'next';
-import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import React from 'react';
 import HomeContents from '../components/HomeContents';
 import TestsHistory from '../components/TestsHistory';
-import connectToDatabase from '../db/connectToDatabase';
-import { IUser } from '../schema/user.schema';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -116,34 +112,3 @@ export default function Index() {
     </Dialog>
   </>;
 }
-
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const token = await getToken({ req: context.req });
-//   if (!token) return {
-//     redirect: {
-//       destination: '/sign-up',
-//       permanent: false
-//     }
-//   };
-//   const db = await connectToDatabase();
-//   if (!db) return {
-//     redirect: {
-//       destination: '/500',
-//       permanent: false
-//     }
-//   };
-//   const { User } = db.models;
-//   const user = await User.findOne({
-//     email: token.email
-//   });
-//   if (!user) return {
-//     redirect: {
-//       destination: '/sign-up',
-//       permanent: false
-//     }
-//   };
-//   return {
-//     props: { user: JSON.parse(JSON.stringify(user)) }
-//   };
-// };

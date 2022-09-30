@@ -1,7 +1,6 @@
 import { Avatar, Divider, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { IUser } from '../schema/user.schema';
-import Image from "next/image";
 import dayjs from 'dayjs';
 
 export interface OutputDetails {
