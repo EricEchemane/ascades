@@ -15,8 +15,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-export default function Index({ user: currentUser }: { user: IUser; }) {
-  const [user, setcurrentUser] = React.useState(currentUser);
+export default function Index() {
+  const [user, setcurrentUser] = React.useState();
   const [page, setPage] = React.useState(0);
   const [open, setOpen] = React.useState(true);
   const { data: session } = useSession();
@@ -27,13 +27,19 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
   };
 
   React.useEffect(() => {
-    fetch("/api/get-user").then((res) => {
-      if (res.ok) return res.json();
-      else router.replace('/sign-up');
-    }).then((user) => {
-      setcurrentUser(user);
-    });
-  }, [router]);
+    fetch("/api/get-user")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setcurrentUser(data.data);
+        }
+        else {
+          router.replace('/sign-up');
+          return;
+        }
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!user || !session) return <div>loading...</div>;
 
@@ -71,8 +77,8 @@ export default function Index({ user: currentUser }: { user: IUser; }) {
           </Stack>
           <Avatar
             sx={{ width: 50, height: 50 }}
-            alt={user.name}
-            src={user.image} />
+            alt={(user as any).name}
+            src={(user as any).image} />
         </Stack>
       </Paper>
       {page === 0 && <HomeContents user={user} />}
