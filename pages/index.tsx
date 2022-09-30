@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import About from '../components/About';
 
@@ -72,10 +72,17 @@ export default function Index() {
               variant='contained'
               className='white'> Tests History </Button>
           </Stack>
-          <Avatar
-            sx={{ width: 50, height: 50 }}
-            alt={(user as any).name}
-            src={(user as any).image} />
+          <Stack
+            spacing={2}
+            direction="row">
+            <Button
+              sx={{ color: "white" }}
+              onClick={() => signOut()}>Sign out</Button>
+            <Avatar
+              sx={{ width: 50, height: 50 }}
+              alt={(user as any).name}
+              src={(user as any).image} />
+          </Stack>
         </Stack>
       </Paper>
       {page === 0 && <HomeContents user={user} />}
