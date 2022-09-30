@@ -7,6 +7,9 @@ async function handler(req: NextApiRequest) {
     const db = await connectToDatabase();
     if (!db) throw new RequestError(500, "Internal server error");
     const { User } = db.models;
+    const userExist = await User.findOne({ email: req.body.email });
+    if (userExist) throw new RequestError(409, "User already exists");
+
     const user = new User(req.body);
     await user.save();
     return user;

@@ -8,7 +8,7 @@ async function handler(req: NextApiRequest, token: JWT) {
     const db = await connectToDatabase();
     if (!db) throw new RequestError(500, "Internal server error");
     const { User } = db.models;
-    const user = await User.findOne({ where: { email: token.email } });
+    const user = await User.findOne({ email: token.email });
     if (!user) throw new RequestError(404, "User not found");
     return user;
 }

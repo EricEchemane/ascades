@@ -66,101 +66,102 @@ export default function SignUp() {
                         Continue with google
                     </Button>
                 </Stack>
-                : <form onSubmit={handleSubmit}><Stack
-                    my={3}
-                    spacing={3}>
+                : <form onSubmit={handleSubmit}>
                     <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between">
-                        <Typography
-                            variant='h3'>
-                            Sign up
-                        </Typography>
-                        <Avatar
-                            sx={{
-                                width: 70,
-                                height: 70,
-                                border: `4px solid #a99271`
-                            }}
-                            alt={session.user.name || ""}
-                            src={session.user.image || ""} />
-                    </Stack>
-                    <TextField
-                        defaultValue={session.user.name}
-                        inputProps={{ readOnly: true }} />
-                    <TextField
-                        defaultValue={session.user.email}
-                        inputProps={{ readOnly: true }} />
-                    <Stack
-                        spacing={4}
-                        alignItems="center"
-                        direction="row">
-                        <LocalizationProvider
-                            dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                label="Birth Date"
-                                value={birthDate}
-                                onChange={(newValue) => {
-                                    setBirthDate(newValue);
+                        my={3}
+                        spacing={3}>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between">
+                            <Typography
+                                variant='h3'>
+                                Sign up
+                            </Typography>
+                            <Avatar
+                                sx={{
+                                    width: 70,
+                                    height: 70,
+                                    border: `4px solid #a99271`
                                 }}
-                                renderInput={(params) => <TextField fullWidth {...params} />}
-                            />
-                        </LocalizationProvider>
-                        <FormControl fullWidth>
-                            <FormLabel id="demo-controlled-radio-buttons-group">Gender</FormLabel>
-                            <RadioGroup
-                                aria-labelledby="demo-controlled-radio-buttons-group"
-                                name="controlled-radio-buttons-group"
-                                value={gender} row
-                                onChange={e => setGender(e.target.value)}
-                            >
-                                <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                <FormControlLabel value="male" control={<Radio />} label="Male" />
-                            </RadioGroup>
-                        </FormControl>
-                    </Stack>
+                                alt={session.user.name || ""}
+                                src={session.user.image || ""} />
+                        </Stack>
+                        <TextField
+                            defaultValue={session.user.name}
+                            inputProps={{ readOnly: true }} />
+                        <TextField
+                            defaultValue={session.user.email}
+                            inputProps={{ readOnly: true }} />
+                        <Stack
+                            spacing={4}
+                            alignItems="center"
+                            direction="row">
+                            <LocalizationProvider
+                                dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Birth Date"
+                                    value={birthDate}
+                                    onChange={(newValue) => {
+                                        setBirthDate(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField fullWidth {...params} />}
+                                />
+                            </LocalizationProvider>
+                            <FormControl fullWidth>
+                                <FormLabel id="demo-controlled-radio-buttons-group">Gender</FormLabel>
+                                <RadioGroup
+                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                    name="controlled-radio-buttons-group"
+                                    value={gender} row
+                                    onChange={e => setGender(e.target.value)}
+                                >
+                                    <FormControlLabel value="female" control={<Radio />} label="Female" />
+                                    <FormControlLabel value="male" control={<Radio />} label="Male" />
+                                </RadioGroup>
+                            </FormControl>
+                        </Stack>
 
-                    <Button
-                        disabled={loadingIndicator.isVisible}
-                        type="submit"
-                        style={{ color: "white" }}
-                        variant='contained'
-                        size="large"> Save </Button>
-                </Stack>
+                        <Button
+                            disabled={loadingIndicator.isVisible}
+                            type="submit"
+                            style={{ color: "white" }}
+                            variant='contained'
+                            size="large"> Save </Button>
+                    </Stack>
                 </form>}
         </Container>
     </>;
 }
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     const token = await getToken({ req: context.req });
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const token = await getToken({ req: context.req });
 
-//     if (!token) return { props: {} };
-//     const db = await connectToDatabase();
-//     if (!db) {
-//         return {
-//             redirect: {
-//                 destination: '/500',
-//                 permanent: false
-//             }
-//         };
-//     }
+    if (!token) return { props: {} };
+    const db = await connectToDatabase();
+    if (!db) {
+        return {
+            redirect: {
+                destination: '/500',
+                permanent: false
+            }
+        };
+    }
 
-//     const { User } = db.models;
+    const { User } = db.models;
 
-//     const user = await User.findOne({
-//         email: token.email
-//     });
-//     if (user) {
-//         return {
-//             redirect: {
-//                 destination: '/',
-//                 permanent: false
-//             }
-//         };
-//     }
+    const user = await User.findOne({
+        email: token.email
+    });
+    if (user) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        };
+    }
 
-//     return {
-//         props: {}
-//     };
-// };
+    return {
+        props: {}
+    };
+};

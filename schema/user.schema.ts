@@ -9,10 +9,6 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: [true, "Email is required"],
-        validate: {
-            validator: isValidEmail,
-            message: "Email is invalid"
-        },
         unique: true
     },
     image: {

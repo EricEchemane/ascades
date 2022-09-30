@@ -8,9 +8,9 @@ export default NextAuth({
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
         }),
     ],
-    session: {
-        maxAge: 1000 * 60 * 60 * 24,
-    },
+    // session: {
+    //     maxAge: 1000 * 60 * 60 * 24,
+    // },
     callbacks: {
         session({ session, token, user }) {
             return session;
