@@ -1,7 +1,7 @@
 import { Avatar, Button, Container, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { signIn, useSession } from 'next-auth/react';
 import Head from 'next/head';
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import Image from "next/image";
 import { Google } from '@mui/icons-material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -41,6 +41,18 @@ export default function SignUp() {
         else notify(body.message, "error");
         loadingIndicator.setVisibility(false);
     };
+
+    useEffect(() => {
+        loadingIndicator.setVisibility(status === "loading");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status]);
+
+    useEffect(() => {
+        if (session && session.user) {
+            router.replace("/");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [session]);
 
     return <>
         <Head><title>Sign in</title></Head>
@@ -133,35 +145,35 @@ export default function SignUp() {
         </Container>
     </>;
 }
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const token = await getToken({ req: context.req });
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//     const token = await getToken({ req: context.req });
 
-    if (!token) return { props: {} };
-    const db = await connectToDatabase();
-    if (!db) {
-        return {
-            redirect: {
-                destination: '/500',
-                permanent: false
-            }
-        };
-    }
+//     if (!token) return { props: {} };
+//     const db = await connectToDatabase();
+//     if (!db) {
+//         return {
+//             redirect: {
+//                 destination: '/500',
+//                 permanent: false
+//             }
+//         };
+//     }
 
-    const { User } = db.models;
+//     const { User } = db.models;
 
-    const user = await User.findOne({
-        email: token.email
-    });
-    if (user) {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false
-            }
-        };
-    }
+//     const user = await User.findOne({
+//         email: token.email
+//     });
+//     if (user) {
+//         return {
+//             redirect: {
+//                 destination: '/',
+//                 permanent: false
+//             }
+//         };
+//     }
 
-    return {
-        props: {}
-    };
-};
+//     return {
+//         props: {}
+//     };
+// };
