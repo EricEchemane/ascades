@@ -135,7 +135,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
                             1. The image should be clearly captured and focus on skin you want to test.
                         </Typography>
                         <Typography mt={4} variant="body1">
-                            {`2. After classifying the result will show up. Save it its the correct image of your skin. Close if it's not and it won't save to your account.`}
+                            {`2. After classifying the result will show up. Save if it is the correct image of your skin. Close if it's not and it won't save to your account.`}
                         </Typography>
                     </Stack>
                 </Stack>
