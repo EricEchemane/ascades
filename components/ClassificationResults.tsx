@@ -28,10 +28,10 @@ export default function ClassificationResults({ user, details }: Props) {
                         my={2}
                         spacing={2}
                         direction="row">
-                        <Avatar
+                        {/* <Avatar
                             sx={{ width: 100, height: 100 }}
                             alt={user.name}
-                            src={user.image} />
+                            src={user.image} /> */}
                         <Stack spacing={.5}>
                             <Typography> <b>Name:</b> {user.name} </Typography>
                             <Divider />

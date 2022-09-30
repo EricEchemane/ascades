@@ -170,6 +170,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
 
         <Dialog
             maxWidth="md"
+            sx={{ width: "800px", margin: "auto" }}
             open={outputDialogIsOpen}
             aria-labelledby="output-dialog">
             <div id='output-download'>
