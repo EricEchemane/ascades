@@ -96,7 +96,7 @@ export default function Index() {
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        {"PRIVACY POLICY"}
+        {"Terms and Conditions"}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description" component="div">
@@ -104,10 +104,10 @@ export default function Index() {
             Last Updated: September 29, 2022
           </Typography>
           <Typography mt={2}>
-            This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Website and tells about Your privacy rights and how the law protects You.
+            By using this website and its services that are provided, you acknowledge that you have read, understood and agree to be bound by our Terms and Conditions. If you do not agree with all of these terms and conditions, you are prohibited from using our services, and you may discontinue use immediately.
           </Typography>
           <Typography mt={2}>
-            We use Your Personal data  to create an account for You to access our Website. You agree to the collection and use of information in accordance with this Privacy Policy.
+            The specific service is to detect skin cancer and other skin problems will not be covered. For best results, researchers advise using a camera with a high resolution. We use Your Personal data  to create an account for You to access our Website. You agree to the collection and use of information in accordance with this Privacy Policy.
           </Typography>
         </DialogContentText>
       </DialogContent>
