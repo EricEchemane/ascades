@@ -70,7 +70,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
         const results = await (pred as any).data();
         const max = Math.max(...results);
 
-        if (max * 100 <= 90.00) {
+        if (max * 100 < 98.00) {
             show("Classification Result", "Not a skin cancer");
             loadingIndicator.setVisibility(false);
             return;
