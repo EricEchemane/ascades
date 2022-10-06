@@ -14,13 +14,23 @@ import useNotification from '../hooks/useNotification';
 export default function SignUp() {
     const router = useRouter();
     const { data: session, status } = useSession();
-    const [gender, setGender] = React.useState("male");
-    const [birthDate, setBirthDate] = React.useState<Dayjs | null>(dayjs());
+    const [gender, setGender] = React.useState("");
+    const [birthDate, setBirthDate] = React.useState<Dayjs | null>(null);
     const loadingIndicator = useLoadingIndicator();
     const notify = useNotification();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+
+        if (!birthDate) {
+            notify("Birth date is required", "error");
+            return;
+        }
+        if (gender === "") {
+            notify("Select your gender", "error");
+            return;
+        }
+
         loadingIndicator.setVisibility(true);
         const res = await fetch("/api/signup", {
             method: "POST",
