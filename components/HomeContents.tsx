@@ -56,18 +56,43 @@ export default function HomeContents({ user }: { user: IUser; }) {
 
     const predict = async () => {
         loadingIndicator.setVisibility(true);
+
+        // ===== SKIN OR NOT SKIN CLASSIFICATION
+        const img1 = document.createElement('img');
+        img1.width = 256;
+        img1.height = 256;
+        if (!file) return;
+        img1.src = URL.createObjectURL(file);
+        let model = await tf.loadLayersModel('/skin_or_not_skin_model/model.json');
+        let imageTensor = tf.browser.fromPixels(img1)
+            .expandDims(0)
+            .expandDims(-1)
+            .div(255.0)
+            .reshape([-1, 256, 256, 3]);
+        let pred: any = model.predict(imageTensor);
+        let results = await pred.data();
+        let confidence = Math.max(...results);
+        let index = results.findIndex((r: any) => r === confidence);
+
+        if (index === 0) {
+            show("Ooops!", "Seems like the image is not a skin");
+            loadingIndicator.setVisibility(false);
+            return;
+        }
+
+        // ======== MAIN MODEL CLASSIFICATION
         const img = document.createElement('img');
         img.width = 28;
         img.height = 28;
         if (!file) return;
         img.src = URL.createObjectURL(file);
 
-        const model = await tf.loadLayersModel('/main_model/model.json');
-        const imageTensor = tf.browser.fromPixels(img)
+        model = await tf.loadLayersModel('/main_model/model.json');
+        imageTensor = tf.browser.fromPixels(img)
             .reshape([-1, 28, 28, 3]);
 
-        const pred = model.predict(imageTensor);
-        const results = await (pred as any).data();
+        pred = model.predict(imageTensor);
+        results = await (pred as any).data();
         const max = Math.max(...results);
 
         if (max * 100 < 98.00) {
@@ -76,7 +101,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
             return;
         }
 
-        const index = results.findIndex((r: any) => r === max);
+        index = results.findIndex((r: any) => r === max);
         loadingIndicator.setVisibility(false);
         setOutputDetails({
             diagnosis: labels[index].label,
