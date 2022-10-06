@@ -62,7 +62,7 @@ export default function HomeContents({ user }: { user: IUser; }) {
         if (!file) return;
         img.src = URL.createObjectURL(file);
 
-        const model = await tf.loadLayersModel('/tfjs/model.json');
+        const model = await tf.loadLayersModel('/main_model/model.json');
         const imageTensor = tf.browser.fromPixels(img)
             .reshape([-1, 28, 28, 3]);
 
