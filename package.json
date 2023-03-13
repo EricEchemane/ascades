@@ -21,7 +21,7 @@
     "html2canvas": "^1.4.1",
     "mongoose": "^6.6.2",
     "next": "12.3.1",
-    "next-auth": "^4.12.2",
+    "next-auth": "^4.20.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
